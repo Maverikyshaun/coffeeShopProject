@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book — Pearl Mccaffrey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Raleway:wght@200;300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body>
+  <header class="site-header" data-header>
+    <a class="brand" href="/">Pearl Mccaffrey</a>
+    <button class="nav-toggle" type="button" aria-label="Menu" data-nav-toggle>
+      <span></span><span></span>
+    </button>
+    <nav class="site-nav" data-nav>
+      <a href="/services">Services</a>
+      <a href="/lookbook">Lookbook</a>
+      <a href="/about">About</a>
+      <a class="active" href="/book">Book</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="page-hero-media" style="--page-image: url('/static/res/pearl-portrait.jpg')"></div>
+      <div class="page-hero-content">
+        <p class="hero-brand">Pearl Mccaffrey</p>
+        <h1>Book</h1>
+        <p>Share a little context. Pearl will reply personally.</p>
+      </div>
+    </section>
+
+    <section class="section book-section">
+      <form class="book-form" data-book-form>
+        <label>
+          Name
+          <input name="name" required minlength="2" />
+        </label>
+        <label>
+          Email
+          <input name="email" type="email" required />
+        </label>
+        <label>
+          Phone <span class="optional">optional</span>
+          <input name="phone" />
+        </label>
+        <label>
+          Service
+          <select name="service_slug" data-service-select>
+            <option value="">Select a service</option>
+          </select>
+        </label>
+        <label>
+          Occasion <span class="optional">optional</span>
+          <input name="occasion" placeholder="Travel, wedding, new role…" />
+        </label>
+        <label>
+          Message
+          <textarea name="message" rows="5" required minlength="5"></textarea>
+        </label>
+        <button class="btn" type="submit">Send inquiry</button>
+        <p class="form-note" data-book-message hidden></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand">Pearl Mccaffrey</div>
+    <p>Personal Shopper</p>
+    <div class="footer-links">
+      <a href="/services">Services</a>
+      <a href="/lookbook">Lookbook</a>
+      <a href="/book">Book</a>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
