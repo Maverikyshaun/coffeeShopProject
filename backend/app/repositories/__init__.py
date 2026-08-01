@@ -1,39 +1,39 @@
 from sqlalchemy.orm import Session
 
-from app.models import ServicePackage, LookbookItem, Testimonial, BookingInquiry
+from app.models import MenuItem, GalleryItem, Testimonial, ReservationInquiry
 
 
-class ServiceRepository:
+class MenuRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def list_all(self) -> list[ServicePackage]:
+    def list_all(self) -> list[MenuItem]:
         return (
-            self.db.query(ServicePackage)
-            .order_by(ServicePackage.sort_order.asc(), ServicePackage.name.asc())
+            self.db.query(MenuItem)
+            .order_by(MenuItem.category.asc(), MenuItem.sort_order.asc(), MenuItem.name.asc())
             .all()
         )
 
-    def list_featured(self) -> list[ServicePackage]:
+    def list_featured(self) -> list[MenuItem]:
         return (
-            self.db.query(ServicePackage)
-            .filter(ServicePackage.is_featured.is_(True))
-            .order_by(ServicePackage.sort_order.asc())
+            self.db.query(MenuItem)
+            .filter(MenuItem.is_featured.is_(True))
+            .order_by(MenuItem.sort_order.asc())
             .all()
         )
 
-    def get_by_slug(self, slug: str) -> ServicePackage | None:
-        return self.db.query(ServicePackage).filter(ServicePackage.slug == slug).first()
+    def get_by_slug(self, slug: str) -> MenuItem | None:
+        return self.db.query(MenuItem).filter(MenuItem.slug == slug).first()
 
 
-class LookbookRepository:
+class GalleryRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def list_all(self) -> list[LookbookItem]:
+    def list_all(self) -> list[GalleryItem]:
         return (
-            self.db.query(LookbookItem)
-            .order_by(LookbookItem.sort_order.asc(), LookbookItem.id.asc())
+            self.db.query(GalleryItem)
+            .order_by(GalleryItem.sort_order.asc(), GalleryItem.id.asc())
             .all()
         )
 
@@ -50,12 +50,12 @@ class TestimonialRepository:
         )
 
 
-class BookingRepository:
+class ReservationRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(self, **kwargs) -> BookingInquiry:
-        row = BookingInquiry(**kwargs)
+    def create(self, **kwargs) -> ReservationInquiry:
+        row = ReservationInquiry(**kwargs)
         self.db.add(row)
         self.db.commit()
         self.db.refresh(row)

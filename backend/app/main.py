@@ -31,14 +31,14 @@ def serve_home():
     return FileResponse(frontend_dir / "index.html")
 
 
-@app.get("/services")
-def serve_services_page():
-    return FileResponse(frontend_dir / "services.html")
+@app.get("/menu")
+def serve_menu_page():
+    return FileResponse(frontend_dir / "menu.html")
 
 
-@app.get("/lookbook")
-def serve_lookbook_page():
-    return FileResponse(frontend_dir / "lookbook.html")
+@app.get("/gallery")
+def serve_gallery_page():
+    return FileResponse(frontend_dir / "gallery.html")
 
 
 @app.get("/about")
@@ -46,9 +46,9 @@ def serve_about_page():
     return FileResponse(frontend_dir / "about.html")
 
 
-@app.get("/book")
-def serve_book_page():
-    return FileResponse(frontend_dir / "book.html")
+@app.get("/visit")
+def serve_visit_page():
+    return FileResponse(frontend_dir / "visit.html")
 
 
 app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")

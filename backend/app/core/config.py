@@ -3,10 +3,10 @@ from pathlib import Path
 
 
 class Settings(BaseSettings):
-    app_name: str = "Pearl Mccaffrey"
-    owner_name: str = "Pearl Mccaffrey"
-    tagline: str = "Personal Shopper"
-    database_url: str = "sqlite:///./pearl_atelier.db"
+    app_name: str = "Caffè Bruno"
+    owner_name: str = "Caffè Bruno"
+    tagline: str = "Coffee House & Roastery"
+    database_url: str = "sqlite:///./caffe_bruno.db"
     frontend_dir: Path = Path(__file__).resolve().parents[3] / "frontend"
 
     class Config:

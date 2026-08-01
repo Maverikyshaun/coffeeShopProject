@@ -14,7 +14,7 @@ async function api(path, options = {}) {
 }
 
 function money(value) {
-  return `£${Number(value).toFixed(0)}`;
+  return `£${Number(value).toFixed(2)}`;
 }
 
 function initHeader() {
@@ -28,62 +28,75 @@ function initHeader() {
   toggle?.addEventListener("click", () => nav?.classList.toggle("is-open"));
 }
 
-function serviceRow(item, index, full = false) {
+function menuRow(item, index, full = false) {
   if (full) {
     return `
-      <article class="service-row" style="animation-delay:${index * 70}ms">
+      <article class="menu-row" style="animation-delay:${index * 70}ms">
         <div class="top">
           <h3>${item.name}</h3>
           <span class="price">${money(item.price)}</span>
         </div>
         <p class="summary">${item.summary}</p>
         <p class="description">${item.description}</p>
-        <p class="meta">${item.duration}</p>
       </article>`;
   }
 
   return `
-    <article class="service-row" style="animation-delay:${index * 70}ms">
+    <article class="menu-row" style="animation-delay:${index * 70}ms">
       <div>
         <h3>${item.name}</h3>
-        <p class="meta">${item.duration}</p>
+        <p class="meta">${item.category}</p>
       </div>
       <p class="summary">${item.summary}</p>
       <span class="price">${money(item.price)}</span>
     </article>`;
 }
 
-async function loadFeaturedServices() {
-  const root = document.querySelector("[data-featured-services]");
+async function loadFeaturedMenu() {
+  const root = document.querySelector("[data-featured-menu]");
   if (!root) return;
   try {
-    const items = await api("/services/featured");
-    root.innerHTML = items.map((item, i) => serviceRow(item, i)).join("");
+    const items = await api("/menu/featured");
+    root.innerHTML = items.map((item, i) => menuRow(item, i)).join("");
   } catch {
-    root.innerHTML = `<p class="loading">Unable to load services.</p>`;
+    root.innerHTML = `<p class="loading">Unable to load the menu.</p>`;
   }
 }
 
-async function loadServices() {
-  const root = document.querySelector("[data-services]");
+async function loadMenu() {
+  const root = document.querySelector("[data-menu]");
   if (!root) return;
   try {
-    const items = await api("/services");
-    root.innerHTML = items.map((item, i) => serviceRow(item, i, true)).join("");
+    const items = await api("/menu");
+    const byCategory = new Map();
+    for (const item of items) {
+      if (!byCategory.has(item.category)) byCategory.set(item.category, []);
+      byCategory.get(item.category).push(item);
+    }
+    let i = 0;
+    root.innerHTML = Array.from(byCategory.entries())
+      .map(
+        ([category, rows]) => `
+          <h3 class="menu-category">${category}</h3>
+          <div class="menu-list menu-list--full">
+            ${rows.map((row) => menuRow(row, i++, true)).join("")}
+          </div>`
+      )
+      .join("");
   } catch {
-    root.innerHTML = `<p class="loading">Unable to load services.</p>`;
+    root.innerHTML = `<p class="loading">Unable to load the menu.</p>`;
   }
 }
 
-async function loadLookbook() {
-  const root = document.querySelector("[data-lookbook]");
+async function loadGallery() {
+  const root = document.querySelector("[data-gallery]");
   if (!root) return;
   try {
-    const items = await api("/lookbook");
+    const items = await api("/gallery");
     root.innerHTML = items
       .map(
         (item, i) => `
-      <figure class="look-item" style="animation-delay:${i * 80}ms">
+      <figure class="gallery-item" style="animation-delay:${i * 80}ms">
         <img src="${item.image_url}" alt="${item.title}" />
         <figcaption>
           <h3>${item.title}</h3>
@@ -93,7 +106,7 @@ async function loadLookbook() {
       )
       .join("");
   } catch {
-    root.innerHTML = `<p class="loading">Unable to load lookbook.</p>`;
+    root.innerHTML = `<p class="loading">Unable to load the gallery.</p>`;
   }
 }
 
@@ -107,21 +120,21 @@ async function loadTestimonials() {
         (item, i) => `
       <article class="quote-item" style="animation-delay:${i * 90}ms">
         <blockquote>${item.quote}</blockquote>
-        <cite>${item.client_name}${item.role ? ` · ${item.role}` : ""}</cite>
+        <cite>${item.customer_name}${item.role ? ` · ${item.role}` : ""}</cite>
       </article>`
       )
       .join("");
   } catch {
-    root.innerHTML = `<p class="loading">Unable to load notes.</p>`;
+    root.innerHTML = `<p class="loading">Unable to load reviews.</p>`;
   }
 }
 
-async function loadStudio() {
-  const blurb = document.querySelector("[data-studio-blurb]");
-  const meta = document.querySelector("[data-studio-meta]");
+async function loadCafe() {
+  const blurb = document.querySelector("[data-cafe-blurb]");
+  const meta = document.querySelector("[data-cafe-meta]");
   if (!blurb && !meta) return;
   try {
-    const info = await api("/studio");
+    const info = await api("/cafe");
     if (blurb) blurb.textContent = info.description;
     if (meta) meta.textContent = `${info.location} · ${info.email}`;
   } catch {
@@ -129,34 +142,22 @@ async function loadStudio() {
   }
 }
 
-async function initBookingForm() {
-  const form = document.querySelector("[data-book-form]");
-  const select = document.querySelector("[data-service-select]");
-  const message = document.querySelector("[data-book-message]");
+async function initVisitForm() {
+  const form = document.querySelector("[data-visit-form]");
+  const message = document.querySelector("[data-visit-message]");
   if (!form) return;
-
-  try {
-    const services = await api("/services");
-    if (select) {
-      select.innerHTML =
-        `<option value="">Select a service</option>` +
-        services.map((s) => `<option value="${s.slug}">${s.name}</option>`).join("");
-    }
-  } catch {
-    /* optional */
-  }
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const data = new FormData(form);
     try {
-      const booking = await api("/bookings", {
+      const reservation = await api("/reservations", {
         method: "POST",
         body: JSON.stringify({
           name: data.get("name"),
           email: data.get("email"),
           phone: data.get("phone") || null,
-          service_slug: data.get("service_slug") || null,
+          party_size: data.get("party_size") ? Number(data.get("party_size")) : null,
           occasion: data.get("occasion") || null,
           message: data.get("message"),
         }),
@@ -165,7 +166,7 @@ async function initBookingForm() {
       if (message) {
         message.hidden = false;
         message.classList.remove("is-error");
-        message.textContent = `Inquiry #${booking.id} received. Pearl will be in touch.`;
+        message.textContent = `Thanks, ${reservation.name.split(" ")[0]} - inquiry #${reservation.id} received. We'll be in touch shortly.`;
       }
     } catch (error) {
       if (message) {
@@ -179,10 +180,10 @@ async function initBookingForm() {
 
 document.addEventListener("DOMContentLoaded", () => {
   initHeader();
-  loadFeaturedServices();
-  loadServices();
-  loadLookbook();
+  loadFeaturedMenu();
+  loadMenu();
+  loadGallery();
   loadTestimonials();
-  loadStudio();
-  initBookingForm();
+  loadCafe();
+  initVisitForm();
 });

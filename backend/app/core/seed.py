@@ -1,137 +1,235 @@
 from app.core.database import SessionLocal, Base, engine
-from app.models import ServicePackage, LookbookItem, Testimonial
+from app.models import MenuItem, GalleryItem, Testimonial
 
 
-PACKAGES = [
+MENU = [
     {
-        "name": "Wardrobe Edit",
-        "slug": "wardrobe-edit",
-        "summary": "A precise clear-out and rebuild of what you already own.",
+        "name": "Espresso",
+        "slug": "espresso",
+        "summary": "Double shot, dark and syrupy.",
         "description": (
-            "Together we edit your closet piece by piece - keep, alter, release. "
-            "You leave with a refined base and a short list of considered additions."
+            "Our house blend, slow-roasted in small batches - notes of dark chocolate, "
+            "toasted hazelnut, and a long, clean finish."
         ),
-        "duration": "3 hours",
-        "price": 420.0,
+        "category": "Coffee",
+        "price": 2.8,
         "is_featured": True,
         "sort_order": 1,
     },
     {
-        "name": "Personal Shopping Day",
-        "slug": "personal-shopping",
-        "summary": "A full day of guided shopping with a quiet, exacting eye.",
+        "name": "Flat White",
+        "slug": "flat-white",
+        "summary": "Silky micro-foam over a double ristretto.",
         "description": (
-            "From fittings to final edits, Pearl leads a tailored shopping day "
-            "across selected houses and ateliers - never rushed, never excess."
+            "Velvet-textured steamed milk poured over a double ristretto shot - "
+            "smooth, strong, and balanced."
         ),
-        "duration": "Full day",
-        "price": 780.0,
+        "category": "Coffee",
+        "price": 3.6,
         "is_featured": True,
         "sort_order": 2,
     },
     {
-        "name": "Occasion Styling",
-        "slug": "occasion-styling",
-        "summary": "One look, fully resolved - events, travel, or first impressions.",
+        "name": "Cortado",
+        "slug": "cortado",
+        "summary": "Equal parts espresso and warm milk.",
         "description": (
-            "A focused session for a single moment that matters. Silhouette, "
-            "fabric, and finish are chosen with restraint and polish."
+            "A short, strong pour cut with just enough steamed milk to soften the "
+            "edge - no foam, no fuss."
         ),
-        "duration": "2 hours",
-        "price": 340.0,
-        "is_featured": True,
+        "category": "Coffee",
+        "price": 3.4,
+        "is_featured": False,
         "sort_order": 3,
     },
     {
-        "name": "Seasonal Capsule",
-        "slug": "seasonal-capsule",
-        "summary": "A slim seasonal wardrobe planned months ahead.",
+        "name": "Caffè Latte",
+        "slug": "caffe-latte",
+        "summary": "Espresso, steamed milk, a whisper of foam.",
         "description": (
-            "Twelve to eighteen pieces that work in concert - proportion, palette, "
-            "and longevity over trend."
+            "Our most approachable pour - mellow espresso rounded out with steamed "
+            "milk, finished with a thin veil of foam."
         ),
-        "duration": "Ongoing",
-        "price": 1250.0,
-        "is_featured": False,
+        "category": "Coffee",
+        "price": 3.7,
+        "is_featured": True,
         "sort_order": 4,
     },
     {
-        "name": "Remote Consult",
-        "slug": "remote-consult",
-        "summary": "Video styling for clients anywhere.",
+        "name": "Affogato",
+        "slug": "affogato",
+        "summary": "Vanilla gelato drowned in hot espresso.",
         "description": (
-            "A refined remote session covering wardrobe direction, sourcing notes, "
-            "and a written edit plan."
+            "A scoop of house-made vanilla gelato, served table-side and finished "
+            "with a hot shot of espresso poured over the top."
         ),
-        "duration": "90 minutes",
-        "price": 220.0,
+        "category": "Coffee",
+        "price": 4.8,
         "is_featured": False,
         "sort_order": 5,
+    },
+    {
+        "name": "Cold Brew",
+        "slug": "cold-brew",
+        "summary": "Steeped 18 hours, poured over ice.",
+        "description": (
+            "Coarse-ground beans steeped cold overnight for a naturally sweet, "
+            "low-acid cup, poured long over ice."
+        ),
+        "category": "Coffee",
+        "price": 4.1,
+        "is_featured": False,
+        "sort_order": 6,
+    },
+    {
+        "name": "Earl Grey",
+        "slug": "earl-grey",
+        "summary": "Loose-leaf, bergamot-bright.",
+        "description": "A classic loose-leaf black tea, steeped to order with a bright citrus lift.",
+        "category": "Tea",
+        "price": 3.2,
+        "is_featured": False,
+        "sort_order": 7,
+    },
+    {
+        "name": "Chai Latte",
+        "slug": "chai-latte",
+        "summary": "House-spiced, steamed with oat milk.",
+        "description": (
+            "Cardamom, cinnamon, clove, and ginger, brewed strong and steamed with "
+            "oat milk by default."
+        ),
+        "category": "Tea",
+        "price": 3.8,
+        "is_featured": True,
+        "sort_order": 8,
+    },
+    {
+        "name": "Cornetto",
+        "slug": "cornetto",
+        "summary": "Flaky, butter-laminated, apricot-glazed.",
+        "description": (
+            "Baked in-house each morning - a classic Italian cornetto, glazed with "
+            "apricot and dusted with sugar."
+        ),
+        "category": "Pastries",
+        "price": 3.3,
+        "is_featured": True,
+        "sort_order": 9,
+    },
+    {
+        "name": "Pistachio Croissant",
+        "slug": "pistachio-croissant",
+        "summary": "Twice-baked, filled with pistachio cream.",
+        "description": (
+            "Day-old croissants twice-baked with pistachio frangipane, topped with "
+            "crushed pistachio and icing sugar."
+        ),
+        "category": "Pastries",
+        "price": 4.5,
+        "is_featured": True,
+        "sort_order": 10,
+    },
+    {
+        "name": "Almond Biscotti",
+        "slug": "almond-biscotti",
+        "summary": "Twice-baked, made for dunking.",
+        "description": "Crisp, twice-baked almond biscotti - built to be dunked into a hot espresso.",
+        "category": "Pastries",
+        "price": 2.4,
+        "is_featured": False,
+        "sort_order": 11,
+    },
+    {
+        "name": "Prosciutto & Fontina Panino",
+        "slug": "prosciutto-fontina-panino",
+        "summary": "Pressed ciabatta, melted fontina.",
+        "description": (
+            "Pressed ciabatta layered with prosciutto, melted fontina, and rocket - "
+            "served warm."
+        ),
+        "category": "Food",
+        "price": 7.9,
+        "is_featured": False,
+        "sort_order": 12,
+    },
+    {
+        "name": "Burrata & Tomato Toast",
+        "slug": "burrata-tomato-toast",
+        "summary": "Sourdough, burrata, basil oil.",
+        "description": (
+            "Toasted sourdough topped with creamy burrata, slow-roasted tomatoes, "
+            "and a drizzle of basil oil."
+        ),
+        "category": "Food",
+        "price": 8.5,
+        "is_featured": True,
+        "sort_order": 13,
     },
 ]
 
-LOOKBOOK = [
+GALLERY = [
     {
-        "title": "Pearl",
-        "caption": "The face of the atelier - quiet, exact, considered.",
-        "image_url": "/static/res/pearl-portrait.jpg",
-        "category": "portrait",
+        "title": "First Pour",
+        "caption": "Espresso in the first light of the morning.",
+        "image_url": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1400&q=80",
+        "category": "coffee",
         "sort_order": 1,
     },
     {
-        "title": "Atelier Edit",
-        "caption": "Thin silhouette. Soft structure. Nothing excess.",
-        "image_url": "/static/res/pearl-lookbook.jpg",
-        "category": "day",
+        "title": "The Bar",
+        "caption": "Where every order begins.",
+        "image_url": "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=1400&q=80",
+        "category": "interior",
         "sort_order": 2,
     },
     {
-        "title": "Studio Line",
-        "caption": "Black, pared back, and precisely proportioned.",
-        "image_url": "/static/res/pearl-studio.jpg",
-        "category": "studio",
+        "title": "Roast Notes",
+        "caption": "Single-origin, roasted weekly in small batches.",
+        "image_url": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1400&q=80",
+        "category": "beans",
         "sort_order": 3,
     },
     {
-        "title": "In Person",
-        "caption": "Pearl Mccaffrey - personal shopper.",
-        "image_url": "/static/res/IMG_5351.jpeg",
-        "category": "portrait",
+        "title": "Corner Table",
+        "caption": "The quiet seat by the window, most mornings.",
+        "image_url": "https://images.unsplash.com/photo-1481833761820-0509d3217039?w=1400&q=80",
+        "category": "interior",
         "sort_order": 4,
     },
     {
-        "title": "City Tailoring",
-        "caption": "Sharp through the waist. Nothing loud.",
-        "image_url": "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1400&q=80",
-        "category": "tailoring",
+        "title": "Latte Art",
+        "caption": "Slow-poured, every single time.",
+        "image_url": "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=1400&q=80",
+        "category": "coffee",
         "sort_order": 5,
     },
     {
-        "title": "Travel Edit",
-        "caption": "Four pieces. Infinite calm.",
-        "image_url": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=80",
-        "category": "travel",
+        "title": "From the Oven",
+        "caption": "Pastries, baked fresh before opening.",
+        "image_url": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1400&q=80",
+        "category": "food",
         "sort_order": 6,
     },
 ]
 
 TESTIMONIALS = [
     {
-        "client_name": "Amelia R.",
-        "role": "Creative director",
-        "quote": "Pearl edits until everything feels inevitable. My wardrobe has never been this quiet - or this exact.",
+        "customer_name": "Daniel P.",
+        "role": "Regular, weekday mornings",
+        "quote": "Best flat white in the neighbourhood, hands down. I've tried. Nothing else comes close.",
         "sort_order": 1,
     },
     {
-        "client_name": "Helena V.",
-        "role": "Founder",
-        "quote": "No noise. No piles of almost. Just pieces that sit perfectly and earn their place.",
+        "customer_name": "Marisol T.",
+        "role": "Local designer",
+        "quote": "It's the kind of place that makes a Tuesday feel a little more like a Sunday. Slow, warm, unhurried.",
         "sort_order": 2,
     },
     {
-        "client_name": "Sofia K.",
-        "role": "Architect",
-        "quote": "She understands proportion the way I understand space. Subtle, rigorous, beautiful.",
+        "customer_name": "Oliver H.",
+        "role": "Writer",
+        "quote": "I've written half a book at that corner table. The espresso is honestly part of the process now.",
         "sort_order": 3,
     },
 ]
@@ -141,13 +239,13 @@ def seed_database() -> None:
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
-        if db.query(ServicePackage).count() == 0:
-            for row in PACKAGES:
-                db.add(ServicePackage(**row))
+        db.query(MenuItem).delete()
+        for row in MENU:
+            db.add(MenuItem(**row))
 
-        db.query(LookbookItem).delete()
-        for row in LOOKBOOK:
-            db.add(LookbookItem(**row))
+        db.query(GalleryItem).delete()
+        for row in GALLERY:
+            db.add(GalleryItem(**row))
 
         if db.query(Testimonial).count() == 0:
             for row in TESTIMONIALS:

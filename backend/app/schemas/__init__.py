@@ -4,13 +4,13 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
 
 
-class ServicePackageOut(BaseModel):
+class MenuItemOut(BaseModel):
     id: int
     name: str
     slug: str
     summary: str
     description: str
-    duration: str
+    category: str
     price: float
     is_featured: bool
     sort_order: int
@@ -18,7 +18,7 @@ class ServicePackageOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class LookbookItemOut(BaseModel):
+class GalleryItemOut(BaseModel):
     id: int
     title: str
     caption: str
@@ -31,7 +31,7 @@ class LookbookItemOut(BaseModel):
 
 class TestimonialOut(BaseModel):
     id: int
-    client_name: str
+    customer_name: str
     quote: str
     role: Optional[str] = None
     sort_order: int
@@ -39,21 +39,21 @@ class TestimonialOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class BookingCreate(BaseModel):
+class ReservationCreate(BaseModel):
     name: str = Field(min_length=2, max_length=120)
     email: EmailStr
     phone: Optional[str] = Field(default=None, max_length=40)
-    service_slug: Optional[str] = Field(default=None, max_length=120)
+    party_size: Optional[int] = Field(default=None, ge=1, le=100)
     occasion: Optional[str] = Field(default=None, max_length=200)
     message: str = Field(min_length=5, max_length=3000)
 
 
-class BookingOut(BaseModel):
+class ReservationOut(BaseModel):
     id: int
     name: str
     email: str
     phone: Optional[str] = None
-    service_slug: Optional[str] = None
+    party_size: Optional[int] = None
     occasion: Optional[str] = None
     message: str
     created_at: datetime
@@ -61,7 +61,7 @@ class BookingOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class StudioInfoOut(BaseModel):
+class CafeInfoOut(BaseModel):
     brand: str
     owner: str
     tagline: str
